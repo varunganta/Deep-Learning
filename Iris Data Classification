@@ -1,0 +1,52 @@
+import tensorflow as tf
+import pandas as pd
+import matplotlib.pyplot as plt
+import numpy as np
+import sklearn
+from sklearn import datasets
+from sklearn.datasets import  load_iris
+
+from tensorflow import keras
+from sklearn.preprocessing import LabelEncoder
+from sklearn.preprocessing import OneHotEncoder
+from keras import utils
+from sklearn.model_selection import train_test_split
+
+dataset = datasets.load_iris()
+dataset
+
+X = dataset.data
+Y = dataset.target
+Y = Y.reshape(len(Y), 1)
+print(X.shape)
+print(Y.shape)
+print(X)
+print(Y)
+
+Matrix = np.append(X, Y, axis=1)
+print(Matrix)
+
+np.random.shuffle(Matrix)
+print(Matrix)
+
+x_train = Matrix[:120,:4]
+y_train = Matrix[:120,4]
+x_test = Matrix[120:,:4]
+y_test = Matrix[120:,4]
+
+model = tf.keras.Sequential([
+                             keras.layers.Dense(units = 8, activation='linear' ,input_shape=(4,)),
+                             keras.layers.Dense(units = 8, activation = 'linear'),
+                             keras.layers.Dense(units = 3, activation = 'softmax')
+])
+
+opti = tf.keras.optimizers.Adam(learning_rate=0.01)
+
+model.compile(optimizer=opti, loss='sparse_categorical_crossentropy', metrics = ['accuracy'], )
+
+model.fit(x_train, y_train, epochs = 20)
+
+model.evaluate(x_test, y_test)
+
+y_hats = model.predict(x_test) 
+
